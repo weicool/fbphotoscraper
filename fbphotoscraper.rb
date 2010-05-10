@@ -92,7 +92,7 @@ num_pages_of_photos = largest_page_number / PHOTOS_PER_PAGE
     
     puts_verbose photo_url
     photo = make_request(photo_url, cookies)
-    file = File.open("#{PHOTOS_DIR}/photo_#{counter}.jpg", 'w') do |file|
+    File.open("#{PHOTOS_DIR}/photo_#{counter}.jpg", 'w') do |file|
       file << photo
     end
     
