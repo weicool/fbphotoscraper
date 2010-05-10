@@ -32,7 +32,7 @@ def puts_verbose(s)
   puts s if $verbose
 end
 
-usage_text = 'USAGE: ./fbphotoscraper.rb username sid c_user xs'
+usage_text = 'USAGE: ./fbphotoscraper.rb username c_user xs'
 
 if ARGV.size >= 1 && ARGV[0] == 'help'
   puts usage_text
