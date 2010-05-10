@@ -41,7 +41,7 @@ fbphotoscraper saves all photos you're tagged in on Facebook onto your computer.
 \
 username is your Facebook username\n\
 \
-sid, c_user, and xs are values of cookies Facebook has saved to your computer.\n\n\
+c_user, and xs are values of cookies Facebook has saved to your computer.\n\n\
 \
 One way to find out these values is to use Firefox:\n\
 1. Log in to your Facebook account.\n\
@@ -54,7 +54,7 @@ Photos will be saved to the 'photos' directory under the current directory.
   exit
 end
 
-if ARGV.size < 4
+if ARGV.size < 3
   puts usage_text
   exit
 end
@@ -63,7 +63,7 @@ photos_base_url = "http://www.facebook.com/#{ARGV[0]}?v=photos&_fb_noscript=1"
 photos_per_page = 15
 photos_dir = 'photos'
 
-cookies = "sid=#{ARGV[1]}; c_user=#{ARGV[2]}; xs=#{ARGV[3]}"
+cookies = "c_user=#{ARGV[1]}; xs=#{ARGV[1]}"
 
 # Find the largest page number (so=?)
 begin
