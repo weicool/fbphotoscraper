@@ -3,9 +3,6 @@
 require 'net/http'
 require 'ftools'
 
-PHOTOS_BASE_URL = 'http://www.facebook.com/weicool?v=photos&_fb_noscript=1'
-PHOTOS_PER_PAGE = 15
-PHOTOS_DIR = 'photos'
 $verbose = true;
 
 def make_request(url, cookies = '', redirect_depth = 10)
@@ -35,12 +32,14 @@ def puts_verbose(s)
   puts s if $verbose
 end
 
-usage_text = 'USAGE: ./fbphotoscraper.rb sid c_user xs'
+usage_text = 'USAGE: ./fbphotoscraper.rb username sid c_user xs'
 
 if ARGV.size >= 1 && ARGV[0] == 'help'
   puts usage_text
   puts "
 fbphotoscraper saves all photos you're tagged in on Facebook onto your computer.\n\n\
+\
+username is your Facebook username\n\
 \
 sid, c_user, and xs are values of cookies Facebook has saved to your computer.\n\n\
 \
@@ -55,16 +54,20 @@ Photos will be saved to the 'photos' directory under the current directory.
   exit
 end
 
-if ARGV.size < 3
+if ARGV.size < 4
   puts usage_text
   exit
 end
 
-cookies = "sid=#{ARGV[0]}; c_user=#{ARGV[1]}; xs=#{ARGV[2]}"
+photos_base_url = "http://www.facebook.com/#{ARGV[0]}?v=photos&_fb_noscript=1"
+photos_per_page = 15
+photos_dir = 'photos'
+
+cookies = "sid=#{ARGV[1]}; c_user=#{ARGV[2]}; xs=#{ARGV[3]}"
 
 # Find the largest page number (so=?)
 begin
-  base_page = make_request(PHOTOS_BASE_URL, cookies)
+  base_page = make_request(photos_base_url, cookies)
   largest_page_number = base_page.scan(/(so=(\d+))+/).last.last.to_i
 rescue
   puts 'FAIL: You are not logged in to Facebook; please ensure you\'ve passed in correct cookie values.'
@@ -72,14 +75,14 @@ rescue
 end
 
 counter = 0
-File.makedirs(PHOTOS_DIR) unless File.directory?(PHOTOS_DIR)
+File.makedirs(photos_dir) unless File.directory?(photos_dir)
 
-num_pages_of_photos = largest_page_number / PHOTOS_PER_PAGE
+num_pages_of_photos = largest_page_number / photos_per_page
 (0..num_pages_of_photos).each do |i|
-  page_number = i * PHOTOS_PER_PAGE
+  page_number = i * photos_per_page
   
   # request page of photos
-  photos = make_request("#{PHOTOS_BASE_URL}&so=#{page_number}", cookies)
+  photos = make_request("#{photos_base_url}&so=#{page_number}", cookies)
   # get urls 
   photo_page_urls = photos.scan(/(UIPhotoGrid_TableCell"><a href="(.*?)")/).map do |url|
     url[1].gsub('amp;', '')
@@ -92,7 +95,7 @@ num_pages_of_photos = largest_page_number / PHOTOS_PER_PAGE
     
     puts_verbose photo_url
     photo = make_request(photo_url, cookies)
-    File.open("#{PHOTOS_DIR}/photo_#{counter}.jpg", 'w') do |file|
+    File.open("#{photos_dir}/photo_#{counter}.jpg", 'w') do |file|
       file << photo
     end
     
