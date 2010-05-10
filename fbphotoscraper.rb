@@ -63,7 +63,7 @@ photos_base_url = "http://www.facebook.com/#{ARGV[0]}?v=photos&_fb_noscript=1"
 photos_per_page = 15
 photos_dir = 'photos'
 
-cookies = "c_user=#{ARGV[1]}; xs=#{ARGV[1]}"
+cookies = "c_user=#{ARGV[1]}; xs=#{ARGV[2]}"
 
 # Find the largest page number (so=?)
 begin
