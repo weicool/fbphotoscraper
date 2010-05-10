@@ -92,6 +92,9 @@ num_pages_of_photos = largest_page_number / photos_per_page
     # request a page with the photo we want
     photo_page = make_request("#{photo_page_url}&_fb_noscript=1", cookies)
     photo_url = photo_page.scan(/<img src="(.*?)" id="myphoto"/)[0][0]
+    # hack to deal with broken regex -- might consume too many characters
+    index_of_quote = photo_url.index('"')
+    photo_url = photo_url[0...index_of_quote] if index_of_quote
     
     puts_verbose photo_url
     photo = make_request(photo_url, cookies)
