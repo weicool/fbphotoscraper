@@ -72,7 +72,7 @@ rescue
 end
 
 counter = 0
-File.makedirs('PHOTOS_DIR') unless File.directory?(PHOTOS_DIR)
+File.makedirs(PHOTOS_DIR) unless File.directory?(PHOTOS_DIR)
 
 num_pages_of_photos = largest_page_number / PHOTOS_PER_PAGE
 (0..num_pages_of_photos).each do |i|
