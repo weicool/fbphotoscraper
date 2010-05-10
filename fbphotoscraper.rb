@@ -75,7 +75,7 @@ counter = 0
 File.makedirs('PHOTOS_DIR') unless File.directory?(PHOTOS_DIR)
 
 num_pages_of_photos = largest_page_number / PHOTOS_PER_PAGE
-(0..1).each do |i|
+(0..num_pages_of_photos).each do |i|
   page_number = i * PHOTOS_PER_PAGE
   
   # request page of photos
