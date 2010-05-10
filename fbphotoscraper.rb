@@ -46,7 +46,7 @@ sid, c_user, and xs are values of cookies Facebook has saved to your computer.\n
 \
 One way to find out these values is to use Firefox:\n\
 1. Log in to your Facebook account.\n\
-2. Under Preferences, find the menu to 'remove individual cookies'\n\
+2. Under Firefox's Preferences, find the menu to 'remove individual cookies'\n\
 3. Look up the cookie values under the facebook.com domain\n\
 You must be logged in to Facebook for this tool to work.\n\n\
 \
