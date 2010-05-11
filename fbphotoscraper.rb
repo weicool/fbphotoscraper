@@ -42,7 +42,7 @@ username is your Facebook username
 c_user and xs are values of cookies Facebook has saved to your computer.
 
 One way to find out these values is to use Firefox:
-1. Log in to your Facebook account.
+1. Log in to your Facebook account. IMPORTANT: make sure you choose NOT to 'Keep me logged in'.
 2. Under Firefox's Preferences/Options, find the menu to 'remove individual cookies' or 'show cookies'.
 3. Look up the cookie values under the facebook.com domain.
 You must be logged in to Facebook for this tool to work.
