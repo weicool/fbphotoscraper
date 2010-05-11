@@ -2,4 +2,4 @@ fbphotoscraper saves all photos you're tagged in on Facebook onto your computer.
 
 You need to have Ruby installed in order to run fbphotoscraper.
 
-For usage help, run './fbphotoscraper.rb help'
+For usage help, run 'ruby fbphotoscraper.rb help'

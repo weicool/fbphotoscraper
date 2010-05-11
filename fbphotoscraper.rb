@@ -3,8 +3,6 @@
 require 'net/http'
 require 'ftools'
 
-$verbose = true;
-
 def make_request(url, cookies = '', redirect_depth = 10)
   raise "FAIL: too many redirects" if redirect_depth == 0
   
@@ -28,29 +26,25 @@ def make_request(url, cookies = '', redirect_depth = 10)
   response.body
 end
 
-def puts_verbose(s)
-  puts s if $verbose
-end
-
-usage_text = 'USAGE: ./fbphotoscraper.rb username c_user xs'
+usage_text = 'USAGE: ruby fbphotoscraper.rb username c_user xs'
 
 if ARGV.size >= 1 && ARGV[0] == 'help'
   puts usage_text
-  puts "
-fbphotoscraper saves all photos you're tagged in on Facebook onto your computer.\n\n\
-\
-username is your Facebook username\n\
-\
-c_user and xs are values of cookies Facebook has saved to your computer.\n\n\
-\
-One way to find out these values is to use Firefox:\n\
-1. Log in to your Facebook account.\n\
-2. Under Firefox's Preferences/Options, find the menu to 'remove individual cookies' or 'show cookies'.\n\
-3. Look up the cookie values under the facebook.com domain.\n\
-You must be logged in to Facebook for this tool to work.\n\n\
-\
+  puts """
+fbphotoscraper saves all photos you're tagged in on Facebook onto your computer.
+
+username is your Facebook username
+
+c_user and xs are values of cookies Facebook has saved to your computer.
+
+One way to find out these values is to use Firefox:
+1. Log in to your Facebook account.
+2. Under Firefox's Preferences/Options, find the menu to 'remove individual cookies' or 'show cookies'.
+3. Look up the cookie values under the facebook.com domain.
+You must be logged in to Facebook for this tool to work.
+
 Photos will be saved to the 'photos' directory under the current directory.
-"
+"""
   exit
 end
 
@@ -65,7 +59,7 @@ photos_dir = 'photos'
 
 cookies = "c_user=#{ARGV[1]}; xs=#{ARGV[2]}"
 
-# Find the largest page number (so=?)
+# Find the largest page number (so=N)
 begin
   base_page = make_request(photos_base_url, cookies)
   largest_page_number = base_page.scan(/(so=(\d+))+/).last.last.to_i
@@ -74,8 +68,9 @@ rescue
   exit
 end
 
-counter = 0
+
 File.makedirs(photos_dir) unless File.directory?(photos_dir)
+counter = -1
 
 num_pages_of_photos = largest_page_number / photos_per_page
 (0..num_pages_of_photos).each do |i|
@@ -89,6 +84,8 @@ num_pages_of_photos = largest_page_number / photos_per_page
   end
   
   photo_page_urls.each do |photo_page_url|
+    counter += 1
+    
     # request a page with the photo we want
     photo_page = make_request("#{photo_page_url}&_fb_noscript=1", cookies)
     photo_url = photo_page.scan(/<img src="(.*?)" id="myphoto"/)[0][0]
@@ -96,14 +93,10 @@ num_pages_of_photos = largest_page_number / photos_per_page
     index_of_quote = photo_url.index('"')
     photo_url = photo_url[0...index_of_quote] if index_of_quote
     
-    puts_verbose photo_url
-    photo = make_request(photo_url, cookies)
-    File.open("#{photos_dir}/photo_#{counter}.jpg", 'w') do |file|
-      file << photo
-    end
-    
-    counter += 1
+    puts "GET #{photo_url}"
+    photo = make_request(photo_url)
+    File.open("#{photos_dir}/photo_#{counter}.jpg", 'wb') { |file| file << photo }
   end
 end
 
-puts 'DONE'
+puts "DONE: saved #{counter == -1 ? 0 : counter + 1} photos"
