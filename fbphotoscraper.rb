@@ -7,7 +7,7 @@ def make_request(url, cookies = '', redirect_depth = 10)
   raise "FAIL: too many redirects" if redirect_depth == 0
   
   headers = {
-    'User-Agent' => 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; en-US; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3',
+    'User-Agent' => 'Mozilla/5.0 Gecko/20100401 Firefox/3.6.3',
     'Cookie' => cookies
   }
   url = URI.parse(url)
