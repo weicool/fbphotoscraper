@@ -1,5 +1,9 @@
 #!/usr/bin/env ruby
 
+##################################################
+## Copyright © 2010 Wei Yeh - weicool@gmail.com ##
+##################################################
+
 require 'net/http'
 require 'ftools'
 
