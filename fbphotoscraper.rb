@@ -30,7 +30,7 @@ def make_request(url, cookies = '', redirect_depth = 10)
   response.body
 end
 
-usage_text = 'USAGE: ruby fbphotoscraper.rb username c_user xs'
+usage_text = 'USAGE: ruby fbphotoscraper.rb username c_user xs [counter [limit]]'
 
 if ARGV.size >= 1 && ARGV[0] == 'help'
   puts usage_text
@@ -47,6 +47,10 @@ One way to find out these values is to use Firefox:
 3. Look up the cookie values under the facebook.com domain.
 You must be logged in to Facebook for this tool to work.
 
+counter and limit are optional, nonnegative values. counter is the starting number the first
+photo is named with and defaults to 0. limit is how many photos you want to save and
+defaults to no limit. fbphotoscraper always starts saving the latest photo.
+
 Photos will be saved to the 'photos' directory under the current directory.
 """
   exit
@@ -56,6 +60,12 @@ if ARGV.size < 3
   puts usage_text
   exit
 end
+
+counter = 0
+limit = -1  # negative number means no limit
+
+counter = ARGV[3].to_i if ARGV.size >= 4
+limit = ARGV[4].to_i if ARGV.size >= 5
 
 photos_base_url = "http://www.facebook.com/#{ARGV[0]}?v=photos&_fb_noscript=1"
 photos_per_page = 15
@@ -72,9 +82,8 @@ rescue
   exit
 end
 
-
 File.makedirs(photos_dir) unless File.directory?(photos_dir)
-counter = -1
+num_photos_saved = 0
 
 num_pages_of_photos = largest_page_number / photos_per_page
 (0..num_pages_of_photos).each do |i|
@@ -88,7 +97,7 @@ num_pages_of_photos = largest_page_number / photos_per_page
   end
   
   photo_page_urls.each do |photo_page_url|
-    counter += 1
+    break if limit >= 0 && num_photos_saved >= limit
     
     # request a page with the photo we want
     photo_page = make_request("#{photo_page_url}&_fb_noscript=1", cookies)
@@ -99,8 +108,12 @@ num_pages_of_photos = largest_page_number / photos_per_page
     
     puts "GET #{photo_url}"
     photo = make_request(photo_url)
-    File.open("#{photos_dir}/photo_#{counter}.jpg", 'wb') { |file| file << photo }
+    File.open("#{photos_dir}/fbphoto_#{counter}.jpg", 'wb') { |file| file << photo }
+    
+    counter += 1
+    num_photos_saved += 1
   end
+  break if limit >= 0 && num_photos_saved >= limit
 end
 
-puts "DONE: saved #{counter == -1 ? 0 : counter + 1} photos"
+puts "DONE: saved #{num_photos_saved} photos"
