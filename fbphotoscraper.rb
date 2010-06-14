@@ -92,7 +92,7 @@ num_pages_of_photos = largest_page_number / photos_per_page
   # request page of photos
   photos = make_request("#{photos_base_url}&so=#{page_number}", cookies)
   # get urls 
-  photo_page_urls = photos.scan(/(UIPhotoGrid_TableCell"><a href="(.*?)")/).map do |url|
+  photo_page_urls = photos.scan(/(UIPhotoGrid_TableCell"><a .*? href="(.*?)")/).map do |url|
     url[1].gsub('amp;', '')
   end
   
